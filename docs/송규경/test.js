@@ -1,3 +1,3 @@
-const testFunc = v => {
-  console.log("hi")
-}
+const testFunc = (v) => {
+  console.log('hi');
+};

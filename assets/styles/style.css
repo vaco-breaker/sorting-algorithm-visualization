@@ -1,0 +1,9 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
+  background-color: #d8c9fc;
+  font-family: 'Noto Sans KR', sans-serif;
+}

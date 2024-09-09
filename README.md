@@ -18,6 +18,7 @@
 <br/>
 
 ### 정렬 알고리즘 시각화 애니메이션 프로젝트
+
 ### Bubble, Insertion, Merge, Selection
 
 <br/>

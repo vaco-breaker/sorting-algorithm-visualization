@@ -1,0 +1,21 @@
+{
+  "name": "sorting-algorithm-visualization",
+  "version": "1.0.0",
+  "description": "정렬 알고리즘 시각화 애니메이션(bubble, insertion, merge, selection)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "husky install",
+    "format": "prettier --cache --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.1.5",
+    "prettier": "^3.3.3"
+  }
+}

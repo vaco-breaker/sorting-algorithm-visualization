@@ -2,13 +2,13 @@ const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
 const $numberInput = document.querySelector('#numberInput');
 const $errorMessage = document.querySelector('#errorMessage');
-const $submitButton = document.querySelector("#submitButton");
+const $submitButton = document.querySelector('#submitButton');
 
 const SORT_OPTIONS = Object.freeze({
-  BUBBLE: "bubbleSort",
-  INSERTION: "insertionSort", 
-  MERGE: "mergeSort",
-  SELECTION: "selectionSort"
+  BUBBLE: 'bubbleSort',
+  INSERTION: 'insertionSort',
+  MERGE: 'mergeSort',
+  SELECTION: 'selectionSort',
 });
 
 let selectedSortOption = SORT_OPTIONS.BUBBLE;
@@ -21,9 +21,8 @@ const changeNumberInput = (e) => {
   } else {
     $errorMessage.textContent = '';
   }
-  console.log("before== ", e.target.value)
+
   e.target.value = e.target.value.replace(/ +(?= )|[^0-9 ]/g, '');
-  console.log("after== ", e.target.value)
 };
 
 const clickSortOptions = (e) => {
@@ -59,14 +58,16 @@ const pickSortingAlgorithm = (option, targetArray) => {
     default:
       break;
   }
-}
+};
 
 const pickSortingAlgorithmCallback = () => {
   const inputValue = $numberInput.value;
-  const numberArray = inputValue.split(' ').filter((value) => value !== '' && value !== ' ');
+  const numberArray = inputValue
+    .split(' ')
+    .filter((value) => value !== '' && value !== ' ');
 
   pickSortingAlgorithm(selectedSortOption, numberArray);
-}
+};
 
 $numberInput.addEventListener('input', changeNumberInput);
 $sortOptionBox.addEventListener('click', clickSortOptions);

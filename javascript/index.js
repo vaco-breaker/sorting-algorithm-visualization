@@ -1,4 +1,5 @@
 import selectionSortingAlgorithm from './sort/selection.js';
+import bubbleUp from "./sort/bubble.js";
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
@@ -44,7 +45,7 @@ const pickSortingAlgorithm = (option, targetArray) => {
   switch (option) {
     case SORT_OPTIONS.BUBBLE:
       console.log('Bubble Sort Clicked!');
-      console.log(targetArray);
+      animation(bubbleUp(targetArray));
       break;
     case SORT_OPTIONS.INSERTION:
       console.log('Insertion Sort Clicked!');
@@ -62,6 +63,7 @@ const pickSortingAlgorithm = (option, targetArray) => {
       break;
   }
 };
+
 
 const pickSortingAlgorithmCallback = () => {
   const inputValueArray = $numberInput.value
@@ -104,9 +106,19 @@ const animation = async (generator) => {
 };
 
 const activateEvent = () => {
+  const animation = async (generator) => {
+  deactivateEvent();
+  for (let yieldArray of generator) {
+    createBarArray(yieldArray);
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+  }
+  activateEvent();
+};
+
+const activateEvent = () => {
   $numberInput.addEventListener('input', changeNumberInput);
-  $sortOptionBox.addEventListener('click', clickSortOptions);
-  $submitButton.addEventListener('click', pickSortingAlgorithmCallback);
+    $sortOptionBox.addEventListener('click', clickSortOptions);
+    $submitButton.addEventListener('click', pickSortingAlgorithmCallback);
 };
 
 const deactivateEvent = () => {
@@ -116,3 +128,14 @@ const deactivateEvent = () => {
 };
 
 activateEvent();
+};
+
+const deactivateEvent = () => {
+  $numberInput.removeEventListener('input', changeNumberInput);
+  $sortOptionBox.removeEventListener('click', clickSortOptions);
+  $submitButton.removeEventListener('click', pickSortingAlgorithmCallback);
+};
+
+activateEvent();
+
+

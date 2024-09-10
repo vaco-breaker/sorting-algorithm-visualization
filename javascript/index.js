@@ -3,6 +3,7 @@ const $sortOptions = $sortOptionBox.querySelectorAll('li');
 const $numberInput = document.querySelector('#numberInput');
 const $errorMessage = document.querySelector('#errorMessage');
 const $submitButton = document.querySelector('#submitButton');
+const $showSortingNumbers = document.querySelector("#showSortingNumbers");
 
 const SORT_OPTIONS = Object.freeze({
   BUBBLE: 'bubbleSort',
@@ -66,8 +67,21 @@ const pickSortingAlgorithmCallback = () => {
     .split(' ')
     .filter((value) => value !== '' && value !== ' ');
 
+  createInitialArray(numberArray);
   pickSortingAlgorithm(selectedSortOption, numberArray);
 };
+
+const createInitialArray = (array) => {
+  array.forEach((number, index) => {
+    const newElement = document.createElement("div");
+    newElement.textContent = number;
+    newElement.classList.add("sortingArrayElement");
+    newElement.id = number;
+    newElement.dataset.index = index;
+
+    $showSortingNumbers.appendChild(newElement);
+  })
+}
 
 $numberInput.addEventListener('input', changeNumberInput);
 $sortOptionBox.addEventListener('click', clickSortOptions);

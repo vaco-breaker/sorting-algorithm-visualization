@@ -17,6 +17,22 @@
     <title>Sorting Algorithm Visualization</title>
   </head>
   <body>
-    <header>Sorting Algorithm Visualization</header>
+    <nav>
+      <header>Sorting Algorithm Visualization</header>
+      <div class="input-box">
+        <input id="numberInput" type="text" placeholder="ex) 5 8 12 15" />
+        <span id="errorMessage"></span>
+      </div>
+      <ul class="sort-option-box">
+        <li id="bubbleSort" class="selected">Bubble Sort</li>
+        <li id="insertionSort">Insertion Sort</li>
+        <li id="mergeSort">Merge Sort</li>
+        <li id="selectionSort">Selection Sort</li>
+      </ul>
+      <button id="submitButton">SUBMIT</button>
+    </nav>
+    <main>
+      <article id="showSortingNumbers"></article>
+    </main>
   </body>
 </html>

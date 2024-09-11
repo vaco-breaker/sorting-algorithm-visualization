@@ -1,6 +1,7 @@
 import selectionSortingAlgorithm from './sort/selection.js';
 import bubbleUp from './sort/bubble.js';
 import insertionSortAlgorithm from './sort/insertion.js';
+import { divideFuntion } from './sort/merge.js';
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
@@ -8,6 +9,9 @@ const $numberInput = document.querySelector('#numberInput');
 const $errorMessage = document.querySelector('#errorMessage');
 const $submitButton = document.querySelector('#submitButton');
 const $showSortingNumbers = document.querySelector('#showSortingNumbers');
+
+// const $getSortingId = document.querySelector('#sortingArrayElement');
+// const idBox = '';
 
 const SORT_OPTIONS = Object.freeze({
   BUBBLE: 'bubbleSort',

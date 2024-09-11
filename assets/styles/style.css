@@ -116,3 +116,15 @@ article#showSortingNumbers {
 .being-sorted-element {
   color: red;
 }
+
+.first-element-in-array {
+  border-left: 1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.last-element-in-array {
+  border-right: 1px solid black;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}

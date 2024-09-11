@@ -98,7 +98,7 @@ const createBarArray = (array) => {
   });
 };
 
-const animation = async (generator) => {
+const animation = async (generator, mergingFunc) => {
   deactivateEvent();
   let isFirst = true;
 

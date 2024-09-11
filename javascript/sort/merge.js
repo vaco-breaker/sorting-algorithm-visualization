@@ -61,20 +61,19 @@ export const divideArray = function (array) {
   return finalArray;
 };
 
-const mergeArray = function* (left, right) {
+export const mergeArray = function (left, right) {
   const result = [];
 
   while (left.length && right.length) {
     if (left[0] <= right[0]) {
-      // 두 배열의 첫 원소를 비교하여
-      result.push(left.shift()); // 더 작은 수를 결과에 넣어줍니다.
+      result.push(left.shift());
     } else {
-      result.push(right.shift()); // 오른쪽도 마찬가지
+      result.push(right.shift());
     }
   }
 
-  while (left.length) result.push(left.shift()); // 어느 한 배열이 더 많이 남았다면 나머지를 다 넣어줍니다.
-  while (right.length) result.push(right.shift()); // 오른쪽도 마찬가지
+  while (left.length) result.push(left.shift());
+  while (right.length) result.push(right.shift());
 
-  yield result;
+  return result;
 };

@@ -1,7 +1,7 @@
 import selectionSortingAlgorithm from './sort/selection.js';
 import bubbleUp from './sort/bubble.js';
 import insertionSortAlgorithm from './sort/insertion.js';
-import { divideArray } from './sort/merge.js';
+import { divideArray, mergeArray } from './sort/merge.js';
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
@@ -55,7 +55,7 @@ const pickSortingAlgorithm = (option, targetArray) => {
       break;
     case SORT_OPTIONS.MERGE:
       console.log('Merge Sort Clicked!');
-      animation(divideArray(targetArray));
+      animation(divideArray(targetArray), mergeArray);
 
       break;
     case SORT_OPTIONS.SELECTION:
@@ -96,7 +96,7 @@ const createBarArray = (array) => {
   });
 };
 
-const animation = async (generator) => {
+const animation = async (generator, mergingFunc) => {
   deactivateEvent();
 
   if (Array.isArray(generator)) {
@@ -133,7 +133,66 @@ const animation = async (generator) => {
           }
         });
       });
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
 
+    const originalArray = generator.slice();
+    const reversedArray = originalArray.toReversed();
+    const splittedArray = reversedArray.shift();
+    const changeableArray = reversedArray.slice();
+    const arrayBeforeEnd = changeableArray[changeableArray.length - 2];
+
+    for (let dividedArray of reversedArray) {
+      const firstValueCollection = [];
+      const lastValueCollection = [];
+
+      if (!Array.isArray(dividedArray[0])) {
+        const left = arrayBeforeEnd.at(0);
+        const right = arrayBeforeEnd.at(1);
+
+        dividedArray = mergingFunc(left, right);
+      } else {
+        for (let i = 0; i < dividedArray.length; i++) {
+          const array = dividedArray[i];
+
+          if (array.length === 1) continue;
+
+          const pivot = Math.floor(array.length / 2);
+          const left = array.slice(0, pivot);
+          const right = array.slice(pivot, array.length);
+
+          dividedArray.splice(i, 1, mergingFunc(left, right));
+        }
+      }
+
+      if (!Array.isArray(dividedArray[0])) {
+        firstValueCollection.push(dividedArray[0]);
+        lastValueCollection.push(dividedArray.at(-1));
+      } else {
+        dividedArray.forEach((array) => {
+          firstValueCollection.push(array[0]);
+          lastValueCollection.push(array.at(-1));
+        });
+      }
+
+      const flattenedArray = dividedArray.flat();
+
+      createBarArray(flattenedArray);
+
+      const $barArrays = document.querySelectorAll('.sorting-array-element');
+
+      Array.from($barArrays).forEach((element) => {
+        firstValueCollection.forEach((value) => {
+          if (Number(element.id) === value) {
+            element.classList.add('first-element-in-array');
+          }
+        });
+        lastValueCollection.forEach((value) => {
+          if (Number(element.id) === value) {
+            element.classList.add('last-element-in-array');
+          }
+        });
+      });
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
   } else {

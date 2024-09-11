@@ -1,6 +1,7 @@
 import selectionSortingAlgorithm from './sort/selection.js';
 import bubbleUp from './sort/bubble.js';
 import insertionSortAlgorithm from './sort/insertion.js';
+import mergeSortingAlgorithm from './sort/merge.js';
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
@@ -54,7 +55,7 @@ const pickSortingAlgorithm = (option, targetArray) => {
       break;
     case SORT_OPTIONS.MERGE:
       console.log('Merge Sort Clicked!');
-      console.log(targetArray);
+      animation(mergeSortingAlgorithm(targetArray));
       break;
     case SORT_OPTIONS.SELECTION:
       console.log('Selection Sort Clicked!');
@@ -81,8 +82,9 @@ const pickSortingAlgorithmCallback = () => {
  */
 const createBarArray = (array) => {
   $showSortingNumbers.innerHTML = '';
+  const flattenArray = flatten(array);
 
-  array.forEach((number, index) => {
+  flattenArray.forEach((number, index) => {
     const newElement = document.createElement('div');
     newElement.textContent = number;
     newElement.style.height = `${number * 5}px`;
@@ -92,6 +94,19 @@ const createBarArray = (array) => {
 
     $showSortingNumbers.appendChild(newElement);
   });
+};
+
+const flatten = (nestedArray) => {
+  const arr = [];
+
+  (function helper(nestedArray) {
+    for (let el of nestedArray) {
+      if (Array.isArray(el)) helper(el);
+      else arr.push(el);
+    }
+  })(nestedArray);
+
+  return arr;
 };
 
 const animation = async (generator) => {

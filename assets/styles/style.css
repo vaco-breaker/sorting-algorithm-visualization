@@ -118,13 +118,11 @@ article#showSortingNumbers {
 }
 
 .first-element-in-array {
-  border-left: 1px solid black;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  border-left: 3px solid black;
+  margin-left: 40px;
 }
 
 .last-element-in-array {
-  border-right: 1px solid black;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  border-right: 3px solid black;
+  margin-right: 40px;
 }

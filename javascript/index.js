@@ -1,7 +1,7 @@
 import selectionSortingAlgorithm from './sort/selection.js';
 import bubbleUp from './sort/bubble.js';
 import insertionSortAlgorithm from './sort/insertion.js';
-// import { divideArray, mergeArray } from './sort/merge.js';
+import { divideArray } from './sort/merge.js';
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
@@ -54,7 +54,8 @@ const pickSortingAlgorithm = (option, targetArray) => {
       animation(insertionSortAlgorithm(targetArray));
       break;
     case SORT_OPTIONS.MERGE:
-      // showMergeSortingStepsAsync(divideArray, mergeArray, targetArray);
+      console.log('Merge Sort Clicked!');
+      animation(divideArray(targetArray));
 
       break;
     case SORT_OPTIONS.SELECTION:
@@ -98,9 +99,48 @@ const createBarArray = (array) => {
 const animation = async (generator) => {
   deactivateEvent();
 
-  for (let yieldArray of generator) {
-    createBarArray(yieldArray);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+  if (Array.isArray(generator)) {
+    const dividedArrayCollection = generator.slice();
+
+    for (const dividedArray of dividedArrayCollection) {
+      const firstValueCollection = [];
+      const lastValueCollection = [];
+      const flattenedArray = dividedArray.flat();
+
+      if (!Array.isArray(dividedArray[0])) {
+        firstValueCollection.push(dividedArray[0]);
+        lastValueCollection.push(dividedArray.at(-1));
+      } else {
+        dividedArray.forEach((array) => {
+          firstValueCollection.push(array[0]);
+          lastValueCollection.push(array.at(-1));
+        });
+      }
+
+      createBarArray(flattenedArray);
+
+      const $barArrays = document.querySelectorAll('.sorting-array-element');
+
+      Array.from($barArrays).forEach((element) => {
+        firstValueCollection.forEach((value) => {
+          if (Number(element.id) === value) {
+            element.classList.add('first-element-in-array');
+          }
+        });
+        lastValueCollection.forEach((value) => {
+          if (Number(element.id) === value) {
+            element.classList.add('last-element-in-array');
+          }
+        });
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
+  } else {
+    for (const yieldArray of generator) {
+      createBarArray(yieldArray);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+    }
   }
 
   activateEvent();

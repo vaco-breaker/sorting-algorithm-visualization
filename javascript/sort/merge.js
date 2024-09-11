@@ -1,46 +1,60 @@
 // merge algorithm 구현
 
-const divideArray = function (array) {
+export const divideArray = function (array) {
   const LENGTH = array.length;
   const finalArray = [[...array]];
 
   while (true) {
-    const newArray = [];
-    let lastCase = false;
+    let newArray = [];
 
     if (finalArray[finalArray.length - 1].length === LENGTH) {
       const prevArray = finalArray[finalArray.length - 1];
 
-      const pivot = Math.floor(prevArray.length / 2); // 대략 반으로 쪼개는 코드
-      const left = prevArray.slice(0, pivot); // 쪼갠 왼쪽
-      const right = prevArray.slice(pivot, prevArray.length); // 쪼갠 오른쪽
+      const pivot = Math.floor(prevArray.length / 2);
+      const left = prevArray.slice(0, pivot);
+      const right = prevArray.slice(pivot, prevArray.length);
 
       newArray.push(left);
       newArray.push(right);
+
+      finalArray.push(newArray);
+      continue;
     } else {
       for (let i = 0; i < finalArray[finalArray.length - 1].length; i++) {
         const prevArray = finalArray[finalArray.length - 1][i];
 
         if (prevArray.length === 1) {
-          lastCase = true;
           continue;
         } else {
-          const pivot = Math.floor(prevArray.length / 2); // 대략 반으로 쪼개는 코드
-          const left = prevArray.slice(0, pivot); // 쪼갠 왼쪽
-          const right = prevArray.slice(pivot, prevArray.length); // 쪼갠 오른쪽
+          if (i > 0 && finalArray[finalArray.length - 1][i - 1].length === 1) {
+            const prototype = [...array];
+            const emptyArray = [];
 
-          newArray.push(left);
-          newArray.push(right);
+            prototype.forEach((value) => {
+              emptyArray.push([value]);
+            });
+
+            finalArray.push(emptyArray);
+
+            break;
+          } else {
+            const pivot = Math.floor(prevArray.length / 2);
+            const left = prevArray.slice(0, pivot);
+            const right = prevArray.slice(pivot, prevArray.length);
+
+            newArray.push(left);
+            newArray.push(right);
+          }
         }
       }
     }
 
-    if (!lastCase) {
-      finalArray.push(newArray);
-    } else {
-      const finalElement = finalArray[finalArray.length - 1];
-      finalElement.splice(finalElement.length - 1, 1, ...newArray);
+    if (newArray.length === LENGTH) finalArray.push(newArray);
+
+    if (finalArray[finalArray.length - 1].length === LENGTH) {
       break;
+    } else {
+      finalArray.push(newArray);
     }
   }
 

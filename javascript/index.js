@@ -106,8 +106,8 @@ const animation = async (generator) => {
 
 const activateEvent = () => {
   $numberInput.addEventListener('input', changeNumberInput);
-    $sortOptionBox.addEventListener('click', clickSortOptions);
-    $submitButton.addEventListener('click', pickSortingAlgorithmCallback);
+  $sortOptionBox.addEventListener('click', clickSortOptions);
+  $submitButton.addEventListener('click', pickSortingAlgorithmCallback);
 };
 
 const deactivateEvent = () => {

@@ -100,7 +100,7 @@ const animation = async (generator, mergingFunc) => {
   deactivateEvent();
 
   if (Array.isArray(generator)) {
-    const dividedArrayCollection = generator.slice();
+    const dividedArrayCollection = structuredClone(generator);
 
     for (const dividedArray of dividedArrayCollection) {
       const firstValueCollection = [];
@@ -136,15 +136,18 @@ const animation = async (generator, mergingFunc) => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
 
-    const originalArray = generator.slice();
+    const originalArray = structuredClone(generator);
     const reversedArray = originalArray.toReversed();
     const splittedArray = reversedArray.shift();
-    const changeableArray = reversedArray.slice();
+    const changeableArray = structuredClone(reversedArray);
     const arrayBeforeEnd = changeableArray[changeableArray.length - 2];
+    let previousArray = changeableArray[0];
 
     for (let dividedArray of reversedArray) {
       const firstValueCollection = [];
       const lastValueCollection = [];
+
+      dividedArray = structuredClone(previousArray);
 
       if (!Array.isArray(dividedArray[0])) {
         const left = arrayBeforeEnd.at(0);
@@ -153,7 +156,7 @@ const animation = async (generator, mergingFunc) => {
         dividedArray = mergingFunc(left, right);
       } else {
         for (let i = 0; i < dividedArray.length; i++) {
-          const array = dividedArray[i];
+          const array = dividedArray[i].slice();
 
           if (array.length === 1) continue;
 
@@ -175,6 +178,14 @@ const animation = async (generator, mergingFunc) => {
         });
       }
 
+      let newArray = [];
+      for (let i = 0; i < dividedArray.length; i += 2) {
+        if (dividedArray[i + 1]) {
+          newArray.push(dividedArray[i].concat(dividedArray[i + 1]));
+        }
+      }
+
+      previousArray = newArray;
       const flattenedArray = dividedArray.flat();
 
       createBarArray(flattenedArray);

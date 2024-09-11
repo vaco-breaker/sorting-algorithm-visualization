@@ -1,5 +1,6 @@
 import selectionSortingAlgorithm from './sort/selection.js';
 import bubbleUp from './sort/bubble.js';
+import insertionSortAlgorithm from './sort/insertion.js';
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
@@ -49,7 +50,7 @@ const pickSortingAlgorithm = (option, targetArray) => {
       break;
     case SORT_OPTIONS.INSERTION:
       console.log('Insertion Sort Clicked!');
-      console.log(targetArray);
+      animation(insertionSortAlgorithm(targetArray));
       break;
     case SORT_OPTIONS.MERGE:
       console.log('Merge Sort Clicked!');
@@ -65,12 +66,12 @@ const pickSortingAlgorithm = (option, targetArray) => {
 };
 
 const pickSortingAlgorithmCallback = () => {
-  const inputValueArray = $numberInput.value
+  const numberArray = $numberInput.value
     .split(' ')
-    .filter((value) => value !== '' && value !== ' ');
+    .filter((value) => value !== '' && value !== ' ')
+    .map(Number);
 
-  createBarArray(inputValueArray);
-  const numberArray = inputValueArray.map(Number);
+  createBarArray(numberArray);
   pickSortingAlgorithm(selectedSortOption, numberArray);
 };
 
@@ -85,7 +86,7 @@ const createBarArray = (array) => {
     const newElement = document.createElement('div');
     newElement.textContent = number;
     newElement.style.height = `${number * 5}px`;
-    newElement.classList.add('sortingArrayElement');
+    newElement.classList.add('sorting-array-element');
     newElement.id = number;
     newElement.dataset.index = index;
 

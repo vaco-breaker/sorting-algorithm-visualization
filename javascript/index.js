@@ -49,8 +49,8 @@ const pickSortingAlgorithm = (option, targetArray) => {
       animation(bubbleUp(targetArray));
       break;
     case SORT_OPTIONS.INSERTION:
-      showSortingStepsAsync(insertionSortAlgorithm, targetArray);
-
+      console.log('Insertion Sort Clicked!');
+      animation(insertionSortAlgorithm(targetArray));
       break;
     case SORT_OPTIONS.MERGE:
       console.log('Merge Sort Clicked!');
@@ -66,13 +66,12 @@ const pickSortingAlgorithm = (option, targetArray) => {
 };
 
 const pickSortingAlgorithmCallback = () => {
-  const inputValueArray = $numberInput.value
+  const numberArray = $numberInput.value
     .split(' ')
     .filter((value) => value !== '' && value !== ' ')
     .map(Number);
 
-  createBarArray(inputValueArray);
-  const numberArray = inputValueArray.map(Number);
+  createBarArray(numberArray);
   pickSortingAlgorithm(selectedSortOption, numberArray);
 };
 

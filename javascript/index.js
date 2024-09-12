@@ -82,28 +82,22 @@ const pickSortingAlgorithmCallback = (e) => {
  * DOM 에 접근하여 배열에 맞는 막대를 그려주는 함수입니다.
  * @param {Array<Number>} array
  */
-const createBarArray = (array, fixedIndexArray, beingSortedIndex, tmpInfo) => {
+const createBarArray = (array, fixedIndexArray, beingSortedIndexArray, tmpInfo) => {
   $showSortingNumbers.innerHTML = '';
   const maxNumber = Math.max(...array);
 
   array.forEach((number, index) => {
     const newElement = document.createElement('div');
-    newElement.textContent = tmpInfo
-      ? tmpInfo[0] === index
-        ? tmpInfo[1]
-        : number
-      : number;
-    const percentHeight =
-      ((tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number) /
-        maxNumber) *
-      100;
+    const textContent = tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number;
+    newElement.textContent = textContent;
+    const percentHeight = (textContent / maxNumber) * 100;
     newElement.style.height = `${percentHeight}%`;
     newElement.classList.add('sorting-array-element');
 
     if (fixedIndexArray && fixedIndexArray.includes(index)) {
       newElement.classList.add('sorted-fixed');
     }
-    if (index === beingSortedIndex) {
+    if (beingSortedIndexArray && beingSortedIndexArray.includes(index)) {
       newElement.classList.add('being-sorted');
     }
 
@@ -125,15 +119,12 @@ const animation = async (generator, sortType) => {
 
     const array = yieldArray[0];
     const fixedIndexArray = checkWhichFixed(yieldArray, sortType);
-    const beingSortedIndex = checkWhichBeingSorted(yieldArray, sortType);
+    const beingSortedIndexArray = checkWhichBeingSorted(yieldArray, sortType);
 
     if (sortType === SORT_OPTIONS.INSERTION) {
-      createBarArray(array, fixedIndexArray, beingSortedIndex, [
-        yieldArray[2],
-        yieldArray[3],
-      ]);
+      createBarArray(array, fixedIndexArray, beingSortedIndexArray, [yieldArray[2], yieldArray[3]]);
     } else {
-      createBarArray(array, fixedIndexArray, beingSortedIndex);
+      createBarArray(array, fixedIndexArray, beingSortedIndexArray);
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
@@ -169,12 +160,12 @@ const checkWhichFixed = (yieldArray, sortType) => {
 
 const checkWhichBeingSorted = (yieldArray, sortType) => {
   if (sortType === SORT_OPTIONS.BUBBLE) {
-    return yieldArray[2];
+    return [yieldArray[2], yieldArray[2] + 1];
   } else if (sortType === SORT_OPTIONS.INSERTION) {
     if (yieldArray[2] === -1) {
       return null;
     } else {
-      return yieldArray[2];
+      return [yieldArray[2]];
     }
   }
 };

@@ -1,26 +1,41 @@
 export default function* mergeSortingAlgorithm(array) {
-  // 전체 배열의 초기 상태 시각화
   yield [[...array]];
 
-  const dividedArray = yield* fullDivideProcess(array);
-
-  console.log('분할 끝!');
-  console.log('정복 시작!');
-
-  yield* conquerMergeProcess(dividedArray);
+  const dividedArray = yield* divideProcess(array);
+  yield* sortMergeProcess(dividedArray);
 }
 
-function* splitToSmallerParts(fullArray) {
+/**
+ * 모든 배열들을 한 요소만 남을때까지 분할하는 함수입니다.
+ * @param {Array<number>} array
+ * @returns {Array}
+ */
+function* divideProcess(array) {
+  let currentArray = [[...array]];
+
+  while (currentArray.some((part) => Array.isArray(part) && part.length > 1)) {
+    currentArray = yield* divide(currentArray);
+  }
+  yield currentArray;
+  return currentArray;
+}
+
+/**
+ * 배열을 2등분하고 그 기준점에 null 을 넣어 반환하는 함수입니다.
+ * @param {Array<number>} array
+ * @returns {Array}
+ */
+function* divide(array) {
   const result = [];
   let hasSplit = false;
 
-  for (let part of fullArray) {
+  for (let part of array) {
     if (Array.isArray(part) && part.length > 1) {
-      const middle = Math.floor(part.length / 2);
-      const left = part.slice(0, middle);
-      const right = part.slice(middle);
+      const pivot = Math.floor(part.length / 2);
+      const front = part.slice(0, pivot);
+      const back = part.slice(pivot);
 
-      result.push(left, null, right);
+      result.push(front, null, back);
       hasSplit = true;
     } else {
       result.push(part);
@@ -34,36 +49,14 @@ function* splitToSmallerParts(fullArray) {
   return result;
 }
 
-function* fullDivideProcess(fullArray) {
-  let currentArray = [[...fullArray]]; // 초기 배열을 감싼 형태로 시작
+/**
+ * 모든 배열의 요소를 정렬하고 병합하는 함수입니다.
+ * @param {Array<number>} array
+ * @returns {Array}
+ */
+function* sortMergeProcess(array) {
+  let currentArray = [...array];
 
-  // 배열 안의 어떤 요소라도 주어진 판별 함수를 적어도 하나라도 통과하는지 테스트
-  while (currentArray.some((part) => Array.isArray(part) && part.length > 1)) {
-    currentArray = yield* splitToSmallerParts(currentArray);
-  }
-  yield currentArray;
-  return currentArray;
-}
-
-function merge(left, right) {
-  let merged = [];
-  let i = 0,
-    j = 0;
-
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      merged.push(left[i++]);
-    } else {
-      merged.push(right[j++]);
-    }
-  }
-  return merged.concat(left.slice(i)).concat(right.slice(j));
-}
-
-function* conquerMergeProcess(fullArray) {
-  let currentArray = [...fullArray]; // 초기 배열 상태
-
-  // 정복 단계 - 부분 배열들을 병합
   while (currentArray.length > 1) {
     const result = [];
 
@@ -75,15 +68,37 @@ function* conquerMergeProcess(fullArray) {
       ) {
         const merged = merge(currentArray[i], currentArray[i + 2]);
         result.push(merged);
-        i += 2; // 병합된 부분을 건너뜀
+        i += 2;
       } else {
         result.push(currentArray[i]);
       }
     }
 
     currentArray = result;
-    yield currentArray; // 병합 단계마다 상태를 yield
+    yield currentArray;
   }
 
-  yield currentArray; // 최종 병합 완료 상태
+  yield currentArray;
+}
+
+/**
+ * null 을 기준으로 하나하니씩 배열의 요소를 정렬하고 병합하는 함수입니다.
+ * @param {Array<number>} target
+ * @param {Array<number>} comparisonTarget
+ * @returns {Array}
+ */
+function merge(target, comparisonTarget) {
+  const merged = [];
+  let i = 0;
+  let j = 0;
+
+  while (i < target.length && j < comparisonTarget.length) {
+    if (target[i] <= comparisonTarget[j]) {
+      merged.push(target[i++]);
+    } else {
+      merged.push(comparisonTarget[j++]);
+    }
+  }
+
+  return merged.concat(target.slice(i)).concat(comparisonTarget.slice(j));
 }

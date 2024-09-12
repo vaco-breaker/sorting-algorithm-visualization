@@ -144,3 +144,11 @@ article#showSortingNumbers {
     transform: translateX(0);
   }
 }
+
+.sorted-fixed {
+  background-color: gray;
+}
+
+.being-sorted {
+  background-color: greenyellow;
+}

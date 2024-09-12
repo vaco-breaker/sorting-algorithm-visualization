@@ -110,12 +110,18 @@ const activateEvent = () => {
   $numberInput.addEventListener('input', changeNumberInput);
   $sortOptionBox.addEventListener('click', clickSortOptions);
   $submitButton.addEventListener('click', pickSortingAlgorithmCallback);
+  $submitButton.classList.remove('disabled');
+  $sortOptionBox.classList.remove('disabled');
+  $numberInput.removeAttribute('disabled');
 };
 
 const deactivateEvent = () => {
   $numberInput.removeEventListener('input', changeNumberInput);
   $sortOptionBox.removeEventListener('click', clickSortOptions);
   $submitButton.removeEventListener('click', pickSortingAlgorithmCallback);
+  $submitButton.classList.add('disabled');
+  $sortOptionBox.classList.add('disabled');
+  $numberInput.setAttribute('disabled', true);
 };
 
 activateEvent();

@@ -18,6 +18,11 @@ nav {
   height: 300px;
 }
 
+.disabled {
+  opacity: 0.3;
+  cursor: unset !important;
+}
+
 header {
   font-size: 26px;
 }
@@ -91,6 +96,10 @@ button {
 
 button:hover {
   background-color: darksalmon;
+}
+
+button:hover.disabled {
+  background-color: burlywood;
 }
 
 main {

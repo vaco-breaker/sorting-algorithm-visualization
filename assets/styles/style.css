@@ -146,9 +146,31 @@ article#showSortingNumbers {
 }
 
 .sorted-fixed {
-  background-color: gray;
+  background-color: lightgray;
 }
 
 .being-sorted {
   background-color: greenyellow;
+}
+
+.sorted-completed {
+  animation: blink 3s infinite;
+}
+
+@keyframes blink {
+  0% {
+    background: rgb(236, 255, 207);
+  }
+  25% {
+    background: rgb(197, 248, 121);
+  }
+  50% {
+    background: greenyellow;
+  }
+  75% {
+    background: rgb(197, 248, 121);
+  }
+  100% {
+    background: rgb(236, 255, 207);
+  }
 }

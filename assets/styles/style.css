@@ -129,3 +129,18 @@ article#showSortingNumbers {
 .being-sorted-element {
   color: red;
 }
+
+.fade-in {
+  animation: fadeIn 1.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.4;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

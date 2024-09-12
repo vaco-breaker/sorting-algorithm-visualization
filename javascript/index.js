@@ -83,7 +83,7 @@ const pickSortingAlgorithmCallback = (e) => {
  * DOM 에 접근하여 배열에 맞는 막대를 그려주는 함수입니다.
  * @param {Array<Number>} array
  */
-const createBarArray = (array, fixedIndex, beingSortedIndex) => {
+const createBarArray = (array, fixedIndexArray, beingSortedIndex) => {
   $showSortingNumbers.innerHTML = '';
   const maxNumber = Math.max(...array);
 
@@ -94,7 +94,8 @@ const createBarArray = (array, fixedIndex, beingSortedIndex) => {
     newElement.style.height = `${percentHeight}%`;
     newElement.classList.add('sorting-array-element');
 
-    if (fixedIndex.includes(index)) newElement.classList.add('sorted-fixed');
+    if (fixedIndexArray && fixedIndexArray.includes(index))
+      newElement.classList.add('sorted-fixed');
     if (index === beingSortedIndex) newElement.classList.add('being-sorted');
 
     newElement.id = number;
@@ -108,20 +109,23 @@ const animation = async (generator, sortType) => {
   let isFirst = true;
 
   for (let yieldArray of generator) {
-    console.log(yieldArray);
     if (isFirst) {
       $showSortingNumbers.classList.add('fade-in');
       isFirst = false;
     }
 
     const array = yieldArray[0];
-    const fixedIndex = checkWhichFixed(yieldArray, sortType);
+    const fixedIndexArray = checkWhichFixed(yieldArray, sortType);
     const beingSortedIndex = checkWhichBeingSorted(yieldArray, sortType);
+    console.log(fixedIndexArray);
 
-    createBarArray(array, fixedIndex, beingSortedIndex);
+    createBarArray(array, fixedIndexArray, beingSortedIndex);
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
   }
+
+  const $numberBars = document.querySelectorAll('.sorting-array-element');
+  $numberBars.forEach((tag) => tag.classList.add('sorted-completed'));
 
   activateEvent();
 };
@@ -131,8 +135,12 @@ const checkWhichFixed = (yieldArray, sortType) => {
     if (yieldArray[1] === 0) {
       return null;
     } else {
-      const array = Array(yieldArray[0].length).map((_, index) => index + 1);
-      return yieldArray[0].length - yieldArray[1];
+      const previouslyFixedIndex = yieldArray[0].length - yieldArray[1];
+      const array = Array(yieldArray[0].length)
+        .fill(null)
+        .map((_, index) => index)
+        .filter((value) => value >= previouslyFixedIndex);
+      return array;
     }
   }
 };

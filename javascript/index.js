@@ -46,11 +46,11 @@ const pickSortingAlgorithm = (option, targetArray) => {
   switch (option) {
     case SORT_OPTIONS.BUBBLE:
       console.log('Bubble Sort Clicked!');
-      animation(bubbleUp(targetArray));
+      animation(bubbleUp(targetArray), SORT_OPTIONS.BUBBLE);
       break;
     case SORT_OPTIONS.INSERTION:
       console.log('Insertion Sort Clicked!');
-      animation(insertionSortAlgorithm(targetArray));
+      animation(insertionSortAlgorithm(targetArray), SORT_OPTIONS.INSERTION);
       break;
     case SORT_OPTIONS.MERGE:
       console.log('Merge Sort Clicked!');
@@ -58,7 +58,7 @@ const pickSortingAlgorithm = (option, targetArray) => {
       break;
     case SORT_OPTIONS.SELECTION:
       console.log('Selection Sort Clicked!');
-      animation(selectionSortingAlgorithm(targetArray));
+      animation(selectionSortingAlgorithm(targetArray), SORT_OPTIONS.SELECTION);
       break;
     default:
       break;
@@ -81,7 +81,7 @@ const pickSortingAlgorithmCallback = (e) => {
  * DOM 에 접근하여 배열에 맞는 막대를 그려주는 함수입니다.
  * @param {Array<Number>} array
  */
-const createBarArray = (array) => {
+const createBarArray = (array, fixedIndex, beingSortedIndex) => {
   $showSortingNumbers.innerHTML = '';
   const maxNumber = Math.max(...array);
 
@@ -91,27 +91,54 @@ const createBarArray = (array) => {
     const percentHeight = (number / maxNumber) * 100;
     newElement.style.height = `${percentHeight}%`;
     newElement.classList.add('sorting-array-element');
+
+    if (fixedIndex.includes(index)) newElement.classList.add('sorted-fixed');
+    if (index === beingSortedIndex) newElement.classList.add('being-sorted');
+
     newElement.id = number;
     newElement.dataset.index = index;
     $showSortingNumbers.appendChild(newElement);
   });
 };
 
-const animation = async (generator) => {
+const animation = async (generator, sortType) => {
   deactivateEvent();
   let isFirst = true;
 
   for (let yieldArray of generator) {
+    console.log(yieldArray);
     if (isFirst) {
       $showSortingNumbers.classList.add('fade-in');
       isFirst = false;
     }
-    createBarArray(yieldArray);
+
+    const array = yieldArray[0];
+    const fixedIndex = checkWhichFixed(yieldArray, sortType);
+    const beingSortedIndex = checkWhichBeingSorted(yieldArray, sortType);
+
+    createBarArray(array, fixedIndex, beingSortedIndex);
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
   }
 
   activateEvent();
+};
+
+const checkWhichFixed = (yieldArray, sortType) => {
+  if (sortType === SORT_OPTIONS.BUBBLE) {
+    if (yieldArray[1] === 0) {
+      return null;
+    } else {
+      const array = Array(yieldArray[0].length).map((_, index) => index + 1);
+      return yieldArray[0].length - yieldArray[1];
+    }
+  }
+};
+
+const checkWhichBeingSorted = (yieldArray, sortType) => {
+  if (sortType === SORT_OPTIONS.BUBBLE) {
+    return yieldArray[2];
+  }
 };
 
 const activateEvent = () => {

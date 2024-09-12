@@ -82,20 +82,30 @@ const pickSortingAlgorithmCallback = (e) => {
  * DOM 에 접근하여 배열에 맞는 막대를 그려주는 함수입니다.
  * @param {Array<Number>} array
  */
-const createBarArray = (array, fixedIndexArray, beingSortedIndex) => {
+const createBarArray = (array, fixedIndexArray, beingSortedIndex, tmpInfo) => {
   $showSortingNumbers.innerHTML = '';
   const maxNumber = Math.max(...array);
 
   array.forEach((number, index) => {
     const newElement = document.createElement('div');
-    newElement.textContent = number;
-    const percentHeight = (number / maxNumber) * 100;
+    newElement.textContent = tmpInfo
+      ? tmpInfo[0] === index
+        ? tmpInfo[1]
+        : number
+      : number;
+    const percentHeight =
+      ((tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number) /
+        maxNumber) *
+      100;
     newElement.style.height = `${percentHeight}%`;
     newElement.classList.add('sorting-array-element');
 
-    if (fixedIndexArray && fixedIndexArray.includes(index))
+    if (fixedIndexArray && fixedIndexArray.includes(index)) {
       newElement.classList.add('sorted-fixed');
-    if (index === beingSortedIndex) newElement.classList.add('being-sorted');
+    }
+    if (index === beingSortedIndex) {
+      newElement.classList.add('being-sorted');
+    }
 
     newElement.id = number;
     newElement.dataset.index = index;
@@ -116,9 +126,15 @@ const animation = async (generator, sortType) => {
     const array = yieldArray[0];
     const fixedIndexArray = checkWhichFixed(yieldArray, sortType);
     const beingSortedIndex = checkWhichBeingSorted(yieldArray, sortType);
-    console.log(fixedIndexArray);
 
-    createBarArray(array, fixedIndexArray, beingSortedIndex);
+    if (sortType === SORT_OPTIONS.INSERTION) {
+      createBarArray(array, fixedIndexArray, beingSortedIndex, [
+        yieldArray[2],
+        yieldArray[3],
+      ]);
+    } else {
+      createBarArray(array, fixedIndexArray, beingSortedIndex);
+    }
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
   }
@@ -141,12 +157,25 @@ const checkWhichFixed = (yieldArray, sortType) => {
         .filter((value) => value >= previouslyFixedIndex);
       return array;
     }
+  } else if (sortType === SORT_OPTIONS.INSERTION) {
+    const previouslyFixedIndex = yieldArray[1];
+    const array = Array(yieldArray[0].length)
+      .fill(null)
+      .map((_, index) => index)
+      .filter((value) => value <= previouslyFixedIndex);
+    return array;
   }
 };
 
 const checkWhichBeingSorted = (yieldArray, sortType) => {
   if (sortType === SORT_OPTIONS.BUBBLE) {
     return yieldArray[2];
+  } else if (sortType === SORT_OPTIONS.INSERTION) {
+    if (yieldArray[2] === -1) {
+      return null;
+    } else {
+      return yieldArray[2];
+    }
   }
 };
 

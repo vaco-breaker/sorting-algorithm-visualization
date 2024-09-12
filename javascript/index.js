@@ -99,9 +99,15 @@ const createBarArray = (array) => {
 
 const animation = async (generator) => {
   deactivateEvent();
+  let isFirst = true;
 
   for (let yieldArray of generator) {
+    if (isFirst) {
+      $showSortingNumbers.classList.add('fade-in');
+      isFirst = false;
+    }
     createBarArray(yieldArray);
+
     await new Promise((resolve) => setTimeout(resolve, 1500));
   }
 
@@ -116,6 +122,7 @@ const activateEvent = () => {
   $submitButton.classList.remove('disabled');
   $sortOptionBox.classList.remove('disabled');
   $numberInput.removeAttribute('disabled');
+  $showSortingNumbers.classList.remove('fade-in');
 };
 
 const deactivateEvent = () => {

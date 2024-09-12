@@ -1,16 +1,8 @@
-const mergeFuntion = (front, back) => {
-  const resultArray = [];
-
-  while (front.length !== 0 && back.length !== 0) {
-    front[0] <= back[0]
-      ? resultArray.push(front.shift())
-      : resultArray.push(back.shift());
-  }
-
-  if (front.length === 0) resultArray.push(...back);
-  if (back.length === 0) resultArray.push(...front);
-  return resultArray;
-};
+export function* manageFunction(array) {
+  yield [...array];
+  const result = yield* divideFuntion(array);
+  yield* mergeFuntion(result);
+}
 
 export function* divideFuntion(array) {
   if (array.length === 1) return array;
@@ -20,19 +12,16 @@ export function* divideFuntion(array) {
   const backArray = array.slice(pointIndex);
 
   const newArray = [...frontArray, null, ...backArray];
-  const test = inging(newArray);
-  console.log(test);
-  yield test;
+  const throwToYield = divideStepSupply(newArray);
+  yield throwToYield;
 
-  const yFront = yield* divideFuntion(frontArray);
-  const yBack = yield* divideFuntion(backArray);
+  yield* divideFuntion(frontArray);
+  yield* divideFuntion(backArray);
 
-  const result = mergeFuntion(yFront, yBack);
-
-  return result;
+  return throwToYield;
 }
 
-const inging = (() => {
+const divideStepSupply = (() => {
   let stackArray = [];
   let nullRemove = new Set();
 
@@ -58,3 +47,74 @@ const inging = (() => {
     return stackArray;
   };
 })();
+
+export function* mergeFuntion(array) {
+  const targetIndex = Math.floor(array.length / 2);
+  let frontArray = array.slice(0, targetIndex);
+  let backArray = array.slice(targetIndex);
+  let result = [];
+  let nullcount = 0;
+
+  if (targetIndex % 2 !== 0) {
+    frontArray = array.slice(0, targetIndex - 1);
+    backArray = array.slice(targetIndex - 1);
+  }
+
+  for (let i = frontArray.length - 1; i >= 0; i--) {
+    if (frontArray[i] === null && i !== 0 && i !== frontArray.length - 1) {
+      frontArray.splice(i, 1);
+      break;
+    }
+  }
+
+  for (let i = backArray.length - 1; i >= 0; i--) {
+    if (backArray[i] === null) {
+      backArray.splice(i, 1);
+      break;
+    }
+  }
+
+  result = frontArray.concat(backArray);
+  yield result;
+  result = sortingFunction(result);
+  yield result;
+
+  for (let i = 0; i < result.length; i++) {
+    if (result[i] === null) nullcount++;
+  }
+
+  if (nullcount > 1) {
+    yield* mergeFuntion(result);
+  }
+
+  return result;
+}
+
+const sortingFunction = (array) => {
+  let start = 0;
+
+  while (start < array.length) {
+    while (start < array.length && array[start] === null) {
+      start++;
+    }
+
+    let end = start;
+
+    while (end < array.length && array[end] !== null) {
+      end++;
+    }
+
+    for (let i = start; i < end - 1; i++) {
+      for (let j = start; j < end - 1 - (i - start); j++) {
+        if (array[j] > array[j + 1]) {
+          const temp = array[j];
+          array[j] = array[j + 1];
+          array[j + 1] = temp;
+        }
+      }
+    }
+
+    start = end;
+  }
+  return array;
+};

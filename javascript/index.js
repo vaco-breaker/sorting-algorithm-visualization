@@ -66,7 +66,7 @@ const pickSortingAlgorithm = (option, targetArray) => {
 };
 
 const pickSortingAlgorithmCallback = (e) => {
-  if (e.key === 'Enter') {
+  if (e.key === 'Enter' || e.type === 'click') {
     const numberArray = $numberInput.value
       .split(' ')
       .filter((value) => value !== '' && value !== ' ')

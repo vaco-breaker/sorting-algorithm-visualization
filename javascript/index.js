@@ -85,15 +85,16 @@ const pickSortingAlgorithmCallback = () => {
  */
 const createBarArray = (array) => {
   $showSortingNumbers.innerHTML = '';
+  const maxNumber = Math.max(...array);
 
   array.forEach((number, index) => {
     const newElement = document.createElement('div');
     newElement.textContent = number;
-    newElement.style.height = `${number * 5}px`;
+    const percentHeight = (number / maxNumber) * 100;
+    newElement.style.height = `${percentHeight}%`;
     newElement.classList.add('sorting-array-element');
     newElement.id = number;
     newElement.dataset.index = index;
-
     $showSortingNumbers.appendChild(newElement);
   });
 };

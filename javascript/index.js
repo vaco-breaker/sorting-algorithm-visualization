@@ -47,11 +47,11 @@ const pickSortingAlgorithm = (option, targetArray) => {
   switch (option) {
     case SORT_OPTIONS.BUBBLE:
       console.log('Bubble Sort Clicked!');
-      animation(bubbleUp(targetArray));
+      animation(bubbleUp(targetArray), SORT_OPTIONS.BUBBLE);
       break;
     case SORT_OPTIONS.INSERTION:
       console.log('Insertion Sort Clicked!');
-      animation(insertionSortAlgorithm(targetArray));
+      animation(insertionSortAlgorithm(targetArray), SORT_OPTIONS.INSERTION);
       break;
     case SORT_OPTIONS.MERGE:
       console.log('Merge Sort Clicked!');
@@ -60,170 +60,108 @@ const pickSortingAlgorithm = (option, targetArray) => {
       break;
     case SORT_OPTIONS.SELECTION:
       console.log('Selection Sort Clicked!');
-      animation(selectionSortingAlgorithm(targetArray));
+      animation(selectionSortingAlgorithm(targetArray), SORT_OPTIONS.SELECTION);
       break;
     default:
       break;
   }
 };
 
-const pickSortingAlgorithmCallback = () => {
-  const numberArray = $numberInput.value
-    .split(' ')
-    .filter((value) => value !== '' && value !== ' ')
-    .map(Number);
+const pickSortingAlgorithmCallback = (e) => {
+  if (e.key === 'Enter' || e.type === 'click') {
+    const numberArray = $numberInput.value
+      .split(' ')
+      .filter((value) => value !== '' && value !== ' ')
+      .map(Number);
 
-  createBarArray(numberArray);
-  pickSortingAlgorithm(selectedSortOption, numberArray);
+    createBarArray(numberArray);
+    pickSortingAlgorithm(selectedSortOption, numberArray);
+  }
 };
 
 /**
  * DOM 에 접근하여 배열에 맞는 막대를 그려주는 함수입니다.
  * @param {Array<Number>} array
  */
-const createBarArray = (array) => {
+const createBarArray = (array, fixedIndex, beingSortedIndex) => {
   $showSortingNumbers.innerHTML = '';
+  const maxNumber = Math.max(...array);
 
   array.forEach((number, index) => {
     const newElement = document.createElement('div');
     newElement.textContent = number;
-    newElement.style.height = `${number * 5}px`;
+    const percentHeight = (number / maxNumber) * 100;
+    newElement.style.height = `${percentHeight}%`;
     newElement.classList.add('sorting-array-element');
+
+    if (fixedIndex.includes(index)) newElement.classList.add('sorted-fixed');
+    if (index === beingSortedIndex) newElement.classList.add('being-sorted');
+
     newElement.id = number;
     newElement.dataset.index = index;
-
     $showSortingNumbers.appendChild(newElement);
   });
 };
 
-const animation = async (generator, mergingFunc) => {
+const animation = async (generator, sortType) => {
   deactivateEvent();
+  let isFirst = true;
 
-  if (Array.isArray(generator)) {
-    const dividedArrayCollection = structuredClone(generator);
-
-    for (const dividedArray of dividedArrayCollection) {
-      const [firstValueCollection, lastValueCollection] =
-        checkFirstAndLastValues(dividedArray);
-      const flattenedArray = dividedArray.flat();
-
-      createBarArray(flattenedArray);
-      drawBorderLine(firstValueCollection, lastValueCollection);
-
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+  for (let yieldArray of generator) {
+    console.log(yieldArray);
+    if (isFirst) {
+      $showSortingNumbers.classList.add('fade-in');
+      isFirst = false;
     }
 
-    const reversedArray = dividedArrayCollection.toReversed();
-    const splittedArray = reversedArray.shift();
-    const arrayBeforeEnd = reversedArray[reversedArray.length - 2];
-    let previousArray = reversedArray[0];
+    const array = yieldArray[0];
+    const fixedIndex = checkWhichFixed(yieldArray, sortType);
+    const beingSortedIndex = checkWhichBeingSorted(yieldArray, sortType);
 
-    for (let dividedArray of reversedArray) {
-      let newArray = [];
+    createBarArray(array, fixedIndex, beingSortedIndex);
 
-      dividedArray = previousArray;
-      dividedArray = mergeToSortedArray(
-        dividedArray,
-        arrayBeforeEnd,
-        mergingFunc,
-      );
-
-      const flattenedArray = dividedArray.flat();
-      const [firstValueCollection, lastValueCollection] =
-        checkFirstAndLastValues(dividedArray);
-
-      for (let i = 0; i < dividedArray.length; i += 2) {
-        if (dividedArray[i + 1]) {
-          newArray.push(dividedArray[i].concat(dividedArray[i + 1]));
-        }
-      }
-
-      previousArray = newArray;
-
-      createBarArray(flattenedArray);
-      drawBorderLine(firstValueCollection, lastValueCollection);
-
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-    }
-  } else {
-    for (const yieldArray of generator) {
-      createBarArray(yieldArray);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-    }
+    await new Promise((resolve) => setTimeout(resolve, 1500));
   }
 
   activateEvent();
+};
+
+const checkWhichFixed = (yieldArray, sortType) => {
+  if (sortType === SORT_OPTIONS.BUBBLE) {
+    if (yieldArray[1] === 0) {
+      return null;
+    } else {
+      const array = Array(yieldArray[0].length).map((_, index) => index + 1);
+      return yieldArray[0].length - yieldArray[1];
+    }
+  }
+};
+
+const checkWhichBeingSorted = (yieldArray, sortType) => {
+  if (sortType === SORT_OPTIONS.BUBBLE) {
+    return yieldArray[2];
+  }
 };
 
 const activateEvent = () => {
   $numberInput.addEventListener('input', changeNumberInput);
   $sortOptionBox.addEventListener('click', clickSortOptions);
   $submitButton.addEventListener('click', pickSortingAlgorithmCallback);
+  $numberInput.addEventListener('keyup', pickSortingAlgorithmCallback);
+  $submitButton.classList.remove('disabled');
+  $sortOptionBox.classList.remove('disabled');
+  $numberInput.removeAttribute('disabled');
+  $showSortingNumbers.classList.remove('fade-in');
 };
 
 const deactivateEvent = () => {
   $numberInput.removeEventListener('input', changeNumberInput);
   $sortOptionBox.removeEventListener('click', clickSortOptions);
   $submitButton.removeEventListener('click', pickSortingAlgorithmCallback);
-};
-
-const checkFirstAndLastValues = (dividedArray) => {
-  const firstValueCollection = [];
-  const lastValueCollection = [];
-
-  if (!Array.isArray(dividedArray[0])) {
-    firstValueCollection.push(dividedArray[0]);
-    lastValueCollection.push(dividedArray.at(-1));
-  } else {
-    dividedArray.forEach((array) => {
-      firstValueCollection.push(array[0]);
-      lastValueCollection.push(array.at(-1));
-    });
-  }
-
-  return [firstValueCollection, lastValueCollection];
-};
-
-const drawBorderLine = (firstValueCollection, lastValueCollection) => {
-  const $barArrays = document.querySelectorAll('.sorting-array-element');
-
-  Array.from($barArrays).forEach((element) => {
-    firstValueCollection.forEach((value) => {
-      if (Number(element.id) === value) {
-        element.classList.add('first-element-in-array');
-      }
-    });
-    lastValueCollection.forEach((value) => {
-      if (Number(element.id) === value) {
-        element.classList.add('last-element-in-array');
-      }
-    });
-  });
-};
-
-const mergeToSortedArray = (dividedArray, arrayBeforeEnd, mergingFunc) => {
-  const copiedDividedArray = structuredClone(dividedArray);
-
-  if (!Array.isArray(copiedDividedArray[0])) {
-    const left = arrayBeforeEnd.at(0);
-    const right = arrayBeforeEnd.at(1);
-
-    copiedDividedArray = mergingFunc(left, right);
-  } else {
-    for (let i = 0; i < copiedDividedArray.length; i++) {
-      const array = copiedDividedArray[i].slice();
-
-      if (array.length === 1) continue;
-
-      const pivot = Math.floor(array.length / 2);
-      const left = array.slice(0, pivot);
-      const right = array.slice(pivot, array.length);
-
-      copiedDividedArray.splice(i, 1, mergingFunc(left, right));
-    }
-  }
-
-  return copiedDividedArray;
+  $numberInput.removeEventListener('keyup', pickSortingAlgorithmCallback);
+  $submitButton.classList.add('disabled');
+  $sortOptionBox.classList.add('disabled');
+  $numberInput.setAttribute('disabled', true);
 };
 
 activateEvent();

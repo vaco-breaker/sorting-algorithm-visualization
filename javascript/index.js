@@ -69,14 +69,16 @@ const pickSortingAlgorithm = (option, targetArray) => {
   }
 };
 
-const pickSortingAlgorithmCallback = () => {
-  const numberArray = $numberInput.value
-    .split(' ')
-    .filter((value) => value !== '' && value !== ' ')
-    .map(Number);
+const pickSortingAlgorithmCallback = (e) => {
+  if (e.key === 'Enter') {
+    const numberArray = $numberInput.value
+      .split(' ')
+      .filter((value) => value !== '' && value !== ' ')
+      .map(Number);
 
-  createBarArray(numberArray);
-  pickSortingAlgorithm(selectedSortOption, numberArray);
+    createBarArray(numberArray);
+    pickSortingAlgorithm(selectedSortOption, numberArray);
+  }
 };
 
 /**
@@ -114,6 +116,7 @@ const activateEvent = () => {
   $numberInput.addEventListener('input', changeNumberInput);
   $sortOptionBox.addEventListener('click', clickSortOptions);
   $submitButton.addEventListener('click', pickSortingAlgorithmCallback);
+  $numberInput.addEventListener('keyup', pickSortingAlgorithmCallback);
   $submitButton.classList.remove('disabled');
   $sortOptionBox.classList.remove('disabled');
   $numberInput.removeAttribute('disabled');
@@ -123,6 +126,7 @@ const deactivateEvent = () => {
   $numberInput.removeEventListener('input', changeNumberInput);
   $sortOptionBox.removeEventListener('click', clickSortOptions);
   $submitButton.removeEventListener('click', pickSortingAlgorithmCallback);
+  $numberInput.removeEventListener('keyup', pickSortingAlgorithmCallback);
   $submitButton.classList.add('disabled');
   $sortOptionBox.classList.add('disabled');
   $numberInput.setAttribute('disabled', true);

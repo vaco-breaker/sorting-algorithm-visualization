@@ -103,82 +103,35 @@ const animation = async (generator, mergingFunc) => {
     const dividedArrayCollection = structuredClone(generator);
 
     for (const dividedArray of dividedArrayCollection) {
-      const firstValueCollection = [];
-      const lastValueCollection = [];
+      const [firstValueCollection, lastValueCollection] =
+        checkFirstAndLastValues(dividedArray);
       const flattenedArray = dividedArray.flat();
 
-      if (!Array.isArray(dividedArray[0])) {
-        firstValueCollection.push(dividedArray[0]);
-        lastValueCollection.push(dividedArray.at(-1));
-      } else {
-        dividedArray.forEach((array) => {
-          firstValueCollection.push(array[0]);
-          lastValueCollection.push(array.at(-1));
-        });
-      }
-
       createBarArray(flattenedArray);
+      drawBorderLine(firstValueCollection, lastValueCollection);
 
-      const $barArrays = document.querySelectorAll('.sorting-array-element');
-
-      Array.from($barArrays).forEach((element) => {
-        firstValueCollection.forEach((value) => {
-          if (Number(element.id) === value) {
-            element.classList.add('first-element-in-array');
-          }
-        });
-        lastValueCollection.forEach((value) => {
-          if (Number(element.id) === value) {
-            element.classList.add('last-element-in-array');
-          }
-        });
-      });
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
 
-    const originalArray = structuredClone(generator);
-    const reversedArray = originalArray.toReversed();
+    const reversedArray = dividedArrayCollection.toReversed();
     const splittedArray = reversedArray.shift();
-    const changeableArray = structuredClone(reversedArray);
-    const arrayBeforeEnd = changeableArray[changeableArray.length - 2];
-    let previousArray = changeableArray[0];
+    const arrayBeforeEnd = reversedArray[reversedArray.length - 2];
+    let previousArray = reversedArray[0];
 
     for (let dividedArray of reversedArray) {
-      const firstValueCollection = [];
-      const lastValueCollection = [];
-
-      dividedArray = structuredClone(previousArray);
-
-      if (!Array.isArray(dividedArray[0])) {
-        const left = arrayBeforeEnd.at(0);
-        const right = arrayBeforeEnd.at(1);
-
-        dividedArray = mergingFunc(left, right);
-      } else {
-        for (let i = 0; i < dividedArray.length; i++) {
-          const array = dividedArray[i].slice();
-
-          if (array.length === 1) continue;
-
-          const pivot = Math.floor(array.length / 2);
-          const left = array.slice(0, pivot);
-          const right = array.slice(pivot, array.length);
-
-          dividedArray.splice(i, 1, mergingFunc(left, right));
-        }
-      }
-
-      if (!Array.isArray(dividedArray[0])) {
-        firstValueCollection.push(dividedArray[0]);
-        lastValueCollection.push(dividedArray.at(-1));
-      } else {
-        dividedArray.forEach((array) => {
-          firstValueCollection.push(array[0]);
-          lastValueCollection.push(array.at(-1));
-        });
-      }
-
       let newArray = [];
+
+      dividedArray = previousArray;
+      dividedArray = mergeToSortedArray(
+        dividedArray,
+        arrayBeforeEnd,
+        mergingFunc,
+      );
+
+      const flattenedArray = dividedArray.flat();
+      const [firstValueCollection, lastValueCollection] =
+        checkFirstAndLastValues(dividedArray);
+
       for (let i = 0; i < dividedArray.length; i += 2) {
         if (dividedArray[i + 1]) {
           newArray.push(dividedArray[i].concat(dividedArray[i + 1]));
@@ -186,24 +139,10 @@ const animation = async (generator, mergingFunc) => {
       }
 
       previousArray = newArray;
-      const flattenedArray = dividedArray.flat();
 
       createBarArray(flattenedArray);
+      drawBorderLine(firstValueCollection, lastValueCollection);
 
-      const $barArrays = document.querySelectorAll('.sorting-array-element');
-
-      Array.from($barArrays).forEach((element) => {
-        firstValueCollection.forEach((value) => {
-          if (Number(element.id) === value) {
-            element.classList.add('first-element-in-array');
-          }
-        });
-        lastValueCollection.forEach((value) => {
-          if (Number(element.id) === value) {
-            element.classList.add('last-element-in-array');
-          }
-        });
-      });
       await new Promise((resolve) => setTimeout(resolve, 1500));
     }
   } else {
@@ -226,6 +165,65 @@ const deactivateEvent = () => {
   $numberInput.removeEventListener('input', changeNumberInput);
   $sortOptionBox.removeEventListener('click', clickSortOptions);
   $submitButton.removeEventListener('click', pickSortingAlgorithmCallback);
+};
+
+const checkFirstAndLastValues = (dividedArray) => {
+  const firstValueCollection = [];
+  const lastValueCollection = [];
+
+  if (!Array.isArray(dividedArray[0])) {
+    firstValueCollection.push(dividedArray[0]);
+    lastValueCollection.push(dividedArray.at(-1));
+  } else {
+    dividedArray.forEach((array) => {
+      firstValueCollection.push(array[0]);
+      lastValueCollection.push(array.at(-1));
+    });
+  }
+
+  return [firstValueCollection, lastValueCollection];
+};
+
+const drawBorderLine = (firstValueCollection, lastValueCollection) => {
+  const $barArrays = document.querySelectorAll('.sorting-array-element');
+
+  Array.from($barArrays).forEach((element) => {
+    firstValueCollection.forEach((value) => {
+      if (Number(element.id) === value) {
+        element.classList.add('first-element-in-array');
+      }
+    });
+    lastValueCollection.forEach((value) => {
+      if (Number(element.id) === value) {
+        element.classList.add('last-element-in-array');
+      }
+    });
+  });
+};
+
+const mergeToSortedArray = (dividedArray, arrayBeforeEnd, mergingFunc) => {
+  const copiedDividedArray = structuredClone(dividedArray);
+
+  if (!Array.isArray(copiedDividedArray[0])) {
+    const left = arrayBeforeEnd.at(0);
+    const right = arrayBeforeEnd.at(1);
+
+    copiedDividedArray = mergingFunc(left, right);
+  } else {
+    for (let i = 0; i < copiedDividedArray.length; i++) {
+      const array = copiedDividedArray[i].slice();
+
+      if (array.length === 1) continue;
+
+      const pivot = Math.floor(array.length / 2);
+      const left = array.slice(0, pivot);
+      const right = array.slice(pivot, array.length);
+
+      copiedDividedArray.splice(i, 1, mergingFunc(left, right));
+    }
+  }
+
+  return copiedDividedArray;
 };
 
 activateEvent();

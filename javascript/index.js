@@ -1,7 +1,7 @@
 import selectionSortingAlgorithm from './sort/selection.js';
 import bubbleUp from './sort/bubble.js';
 import insertionSortAlgorithm from './sort/insertion.js';
-import {manageFunction} from './sort/merge.js';
+import { manageFunction } from './sort/merge.js';
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');

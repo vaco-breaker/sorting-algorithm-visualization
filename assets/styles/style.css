@@ -59,6 +59,7 @@ span#errorMessage {
   height: 18px;
   font-size: 10px;
   color: red;
+  margin-top: 5px;
 }
 
 ul {
@@ -142,5 +143,35 @@ article#showSortingNumbers {
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+.sorted-fixed {
+  background-color: lightgray;
+}
+
+.being-sorted {
+  background-color: greenyellow;
+}
+
+.sorted-completed {
+  animation: blink 3s infinite;
+}
+
+@keyframes blink {
+  0% {
+    background: rgb(236, 255, 207);
+  }
+  25% {
+    background: rgb(197, 248, 121);
+  }
+  50% {
+    background: greenyellow;
+  }
+  75% {
+    background: rgb(197, 248, 121);
+  }
+  100% {
+    background: rgb(236, 255, 207);
   }
 }

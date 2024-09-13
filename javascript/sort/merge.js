@@ -1,10 +1,10 @@
 export default function* mergeSortAlgorithm(array) {
   yield [...array];
-  const result = yield* divideFuntion(array);
-  yield* mergeFuntion(result);
+  const result = yield* divideFunction(array);
+  yield* mergeFunction(result);
 }
 
-function* divideFuntion(array) {
+function* divideFunction(array) {
   if (array.length === 1) return array;
 
   const pointIndex = Math.floor(array.length / 2);
@@ -15,8 +15,8 @@ function* divideFuntion(array) {
   const throwToYield = divideStepSupply(newArray);
   yield throwToYield;
 
-  yield* divideFuntion(frontArray);
-  yield* divideFuntion(backArray);
+  yield* divideFunction(frontArray);
+  yield* divideFunction(backArray);
 
   return throwToYield;
 }
@@ -48,12 +48,12 @@ const divideStepSupply = (() => {
   };
 })();
 
-function* mergeFuntion(array) {
+function* mergeFunction(array) {
   const targetIndex = Math.floor(array.length / 2);
   let frontArray = array.slice(0, targetIndex);
   let backArray = array.slice(targetIndex);
   let result = [];
-  let nullcount = 0;
+  let nullCount = 0;
 
   if (targetIndex % 2 !== 0) {
     frontArray = array.slice(0, targetIndex - 1);
@@ -80,11 +80,11 @@ function* mergeFuntion(array) {
   yield result;
 
   for (let i = 0; i < result.length; i++) {
-    if (result[i] === null) nullcount++;
+    if (result[i] === null) nullCount++;
   }
 
-  if (nullcount > 1) {
-    yield* mergeFuntion(result);
+  if (nullCount > 1) {
+    yield* mergeFunction(result);
   }
 
   return result;

@@ -1,10 +1,10 @@
-export function* manageFunction(array) {
+export default function* mergeSortAlgorithm(array) {
   yield [...array];
   const result = yield* divideFuntion(array);
   yield* mergeFuntion(result);
 }
 
-export function* divideFuntion(array) {
+function* divideFuntion(array) {
   if (array.length === 1) return array;
 
   const pointIndex = Math.floor(array.length / 2);
@@ -48,7 +48,7 @@ const divideStepSupply = (() => {
   };
 })();
 
-export function* mergeFuntion(array) {
+function* mergeFuntion(array) {
   const targetIndex = Math.floor(array.length / 2);
   let frontArray = array.slice(0, targetIndex);
   let backArray = array.slice(targetIndex);

@@ -59,6 +59,7 @@ span#errorMessage {
   height: 18px;
   font-size: 10px;
   color: red;
+  margin-top: 5px;
 }
 
 ul {

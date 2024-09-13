@@ -127,7 +127,7 @@ const animation = async (generator, sortType) => {
       createBarArray(array, fixedIndexArray, beingSortedIndexArray);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1300));
   }
 
   const $numberBars = document.querySelectorAll('.sorting-array-element');

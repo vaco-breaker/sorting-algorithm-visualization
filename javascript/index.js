@@ -55,7 +55,7 @@ const pickSortingAlgorithm = (option, targetArray) => {
       break;
     case SORT_OPTIONS.MERGE:
       console.log('Merge Sort Clicked!');
-      animation(mergeSortAlgorithm(targetArray));
+      animation(mergeSortAlgorithm(targetArray), SORT_OPTIONS.MERGE);
       break;
     case SORT_OPTIONS.SELECTION:
       console.log('Selection Sort Clicked!');
@@ -84,6 +84,7 @@ const pickSortingAlgorithmCallback = (e) => {
  */
 const createBarArray = (array, fixedIndexArray, beingSortedIndexArray, tmpInfo) => {
   $showSortingNumbers.innerHTML = '';
+  console.log(array);
   const maxNumber = Math.max(...array);
 
   array.forEach((number, index) => {
@@ -117,7 +118,7 @@ const animation = async (generator, sortType) => {
       isFirst = false;
     }
 
-    const array = yieldArray[0];
+    const array = sortType === SORT_OPTIONS.MERGE ? yieldArray : yieldArray[0];
     const fixedIndexArray = checkWhichFixed(yieldArray, sortType);
     const beingSortedIndexArray = checkWhichBeingSorted(yieldArray, sortType);
 

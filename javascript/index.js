@@ -137,36 +137,42 @@ const animation = async (generator, sortType) => {
 };
 
 const checkWhichFixed = (yieldArray, sortType) => {
-  if (sortType === SORT_OPTIONS.BUBBLE) {
-    if (yieldArray[1] === 0) {
-      return null;
-    } else {
-      const previouslyFixedIndex = yieldArray[0].length - yieldArray[1];
+  switch (sortType) {
+    case SORT_OPTIONS.BUBBLE:
+      if (yieldArray[1] === 0) {
+        return null;
+      } else {
+        const previouslyFixedIndex = yieldArray[0].length - yieldArray[1];
+        const array = Array(yieldArray[0].length)
+          .fill(null)
+          .map((_, index) => index)
+          .filter((value) => value >= previouslyFixedIndex);
+        return array;
+      }
+    case SORT_OPTIONS.INSERTION:
+      const previouslyFixedIndex = yieldArray[1];
       const array = Array(yieldArray[0].length)
         .fill(null)
         .map((_, index) => index)
-        .filter((value) => value >= previouslyFixedIndex);
+        .filter((value) => value <= previouslyFixedIndex);
       return array;
-    }
-  } else if (sortType === SORT_OPTIONS.INSERTION) {
-    const previouslyFixedIndex = yieldArray[1];
-    const array = Array(yieldArray[0].length)
-      .fill(null)
-      .map((_, index) => index)
-      .filter((value) => value <= previouslyFixedIndex);
-    return array;
+    default:
+      break;
   }
 };
 
 const checkWhichBeingSorted = (yieldArray, sortType) => {
-  if (sortType === SORT_OPTIONS.BUBBLE) {
-    return [yieldArray[2], yieldArray[2] + 1];
-  } else if (sortType === SORT_OPTIONS.INSERTION) {
-    if (yieldArray[2] === -1) {
-      return null;
-    } else {
-      return [yieldArray[2]];
-    }
+  switch (sortType) {
+    case SORT_OPTIONS.BUBBLE:
+      return [yieldArray[2], yieldArray[2] + 1];
+    case SORT_OPTIONS.INSERTION:
+      if (yieldArray[2] === -1) {
+        return null;
+      } else {
+        return [yieldArray[2]];
+      }
+    default:
+      break;
   }
 };
 

@@ -157,6 +157,19 @@ const checkWhichFixed = (yieldArray, sortType) => {
         .map((_, index) => index)
         .filter((value) => value <= previouslyFixedIndex);
       return array;
+    case SORT_OPTIONS.MERGE:
+      break;
+    case SORT_OPTIONS.SELECTION:
+      if (yieldArray[1] === 0) {
+        return null;
+      } else {
+        const previouslyFixedIndex = yieldArray[1] - 1;
+        const array = Array(yieldArray[0].length)
+          .fill(null)
+          .map((_, index) => index)
+          .filter((value) => value <= previouslyFixedIndex);
+        return array;
+      }
     default:
       break;
   }
@@ -172,6 +185,10 @@ const checkWhichBeingSorted = (yieldArray, sortType) => {
       } else {
         return [yieldArray[2]];
       }
+    case SORT_OPTIONS.MERGE:
+      break;
+    case SORT_OPTIONS.SELECTION:
+      return [yieldArray[2], yieldArray[3]];
     default:
       break;
   }

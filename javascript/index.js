@@ -46,19 +46,15 @@ const clickSortOptions = (e) => {
 const pickSortingAlgorithm = (option, targetArray) => {
   switch (option) {
     case SORT_OPTIONS.BUBBLE:
-      console.log('Bubble Sort Clicked!');
       animation(bubbleUp(targetArray), SORT_OPTIONS.BUBBLE);
       break;
     case SORT_OPTIONS.INSERTION:
-      console.log('Insertion Sort Clicked!');
       animation(insertionSortAlgorithm(targetArray), SORT_OPTIONS.INSERTION);
       break;
     case SORT_OPTIONS.MERGE:
-      console.log('Merge Sort Clicked!');
       animation(mergeSortAlgorithm(targetArray), SORT_OPTIONS.MERGE);
       break;
     case SORT_OPTIONS.SELECTION:
-      console.log('Selection Sort Clicked!');
       animation(selectionSortingAlgorithm(targetArray), SORT_OPTIONS.SELECTION);
       break;
     default:
@@ -84,7 +80,6 @@ const pickSortingAlgorithmCallback = (e) => {
  */
 const createBarArray = (array, fixedIndexArray, beingSortedIndexArray, tmpInfo) => {
   $showSortingNumbers.innerHTML = '';
-  console.log(array);
   const maxNumber = Math.max(...array);
 
   array.forEach((number, index) => {

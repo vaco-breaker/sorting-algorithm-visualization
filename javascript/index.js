@@ -1,7 +1,6 @@
 import selectionSortingAlgorithm from './sort/selection.js';
 import bubbleUp from './sort/bubble.js';
 import insertionSortAlgorithm from './sort/insertion.js';
-import { divideArray, mergeArray } from './sort/merge.js';
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
@@ -55,7 +54,6 @@ const pickSortingAlgorithm = (option, targetArray) => {
       break;
     case SORT_OPTIONS.MERGE:
       console.log('Merge Sort Clicked!');
-      animation(divideArray(targetArray), mergeArray);
 
       break;
     case SORT_OPTIONS.SELECTION:

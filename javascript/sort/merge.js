@@ -4,8 +4,6 @@ function* mergeSortingAlgorithm(array) {
   yield* mergeFunction(result);
 }
 
-export default mergeSortingAlgorithm;
-
 function* divideFunction(array) {
   if (array.length === 1) return array;
 
@@ -88,7 +86,7 @@ function* mergeFunction(array) {
   if (nullCount > 1) {
     yield* mergeFunction(result);
   }
-  console.log(result);
+
   return result;
 }
 
@@ -118,5 +116,8 @@ const sortingFunction = (array) => {
 
     start = end;
   }
+
   return array;
 };
+
+export default mergeSortingAlgorithm;

@@ -83,44 +83,109 @@ const pickSortingAlgorithmCallback = (e) => {
       return;
     }
 
-    createBarArray(numberArray);
     pickSortingAlgorithm(selectedSortOption, numberArray);
   }
 };
+
+const checkPreviousArray = () => {
+  let previousArray = null;
+
+  return {
+    getPreviousArray() {
+      return previousArray;
+    },
+    setPreviousArray(array) {
+      previousArray = array.slice();
+    },
+  };
+};
+
+const { getPreviousArray, setPreviousArray } = checkPreviousArray();
 
 /**
  * DOM 에 접근하여 배열에 맞는 막대를 그려주는 함수입니다.
  * @param {Array<Number>} array
  */
-const createBarArray = (array, fixedIndexArray, beingSortedIndexArray, tmpInfo) => {
+const createBarArray = (array, step, sortType, fixedIndexArray, beingSortedIndexArray, tmpInfo) => {
   $showSortingNumbers.innerHTML = '';
   const maxNumber = Math.max(...array);
 
-  array.forEach((number, index) => {
-    const newElement = document.createElement('div');
-    const textContent = tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number;
-    newElement.textContent = textContent;
-    const percentHeight = (textContent / maxNumber) * 80;
-    newElement.style.height = `${percentHeight}%`;
-    newElement.classList.add('sorting-array-element');
+  if (step === 1 || sortType === SORT_OPTIONS.INSERTION || sortType === SORT_OPTIONS.MERGE) {
+    array.forEach((number, index) => {
+      const newElement = document.createElement('div');
+      const textContent = tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number;
+      newElement.textContent = textContent;
+      const percentHeight = (textContent / maxNumber) * 100;
+      newElement.style.height = `${percentHeight}%`;
+      newElement.classList.add('sorting-array-element');
 
-    if (fixedIndexArray && fixedIndexArray.includes(index)) {
-      newElement.classList.add('sorted-fixed');
-    }
+      if (fixedIndexArray && fixedIndexArray.includes(index)) {
+        newElement.classList.add('sorted-fixed');
+      }
 
-    if (beingSortedIndexArray && beingSortedIndexArray.includes(index)) {
-      newElement.classList.add('being-sorted-highest');
-    }
+      if (beingSortedIndexArray && beingSortedIndexArray.includes(index)) {
+        newElement.classList.add('being-sorted-highest');
+      }
 
-    newElement.id = number;
-    newElement.dataset.index = index;
-    $showSortingNumbers.appendChild(newElement);
-  });
+      newElement.id = number;
+      newElement.dataset.index = index;
+      $showSortingNumbers.appendChild(newElement);
+
+      setPreviousArray(array);
+    });
+  } else {
+    const previousArray = getPreviousArray();
+
+    previousArray.forEach((number, index) => {
+      const newElement = document.createElement('div');
+      const textContent = tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number;
+      newElement.textContent = textContent;
+      const percentHeight = (textContent / maxNumber) * 100;
+      newElement.style.height = `${percentHeight}%`;
+      newElement.style.transition = 'all 1.5s';
+      newElement.classList.add('sorting-array-element');
+
+      newElement.id = number;
+      newElement.dataset.index = index;
+      $showSortingNumbers.appendChild(newElement);
+    });
+
+    const allSortingElement = document.querySelectorAll('.sorting-array-element');
+
+    Array.from(allSortingElement).forEach((element, index) => {
+      if (element.textContent !== array[index]) {
+        const textContent = tmpInfo
+          ? tmpInfo[0] === index
+            ? tmpInfo[1]
+            : array[index]
+          : array[index];
+        element.textContent = textContent;
+        requestAnimationFrame(() => animatingByHeight(element, textContent, maxNumber));
+      }
+
+      if (fixedIndexArray && fixedIndexArray.includes(index)) {
+        element.classList.add('sorted-fixed');
+      }
+
+      if (beingSortedIndexArray && beingSortedIndexArray.includes(index)) {
+        element.classList.add('being-sorted-highest');
+      }
+
+      setPreviousArray(array);
+    });
+  }
+};
+
+const animatingByHeight = (element, height, maxNumber) => {
+  element.style.height = `${(height / maxNumber) * 100}%`;
+
+  requestAnimationFrame(() => animatingByHeight(element, height, maxNumber));
 };
 
 const animation = async (generator, sortType) => {
   deactivateEvent();
   let isFirst = true;
+  let step = 0;
 
   for (let yieldArray of generator) {
     if (isFirst) {
@@ -128,17 +193,22 @@ const animation = async (generator, sortType) => {
       isFirst = false;
     }
 
+    step += 1;
+
     const array = sortType === SORT_OPTIONS.MERGE ? yieldArray : yieldArray[0];
     const fixedIndexArray = checkWhichFixed(yieldArray, sortType);
     const beingSortedIndexArray = checkWhichBeingSorted(yieldArray, sortType);
 
     if (sortType === SORT_OPTIONS.INSERTION) {
-      createBarArray(array, fixedIndexArray, beingSortedIndexArray, [yieldArray[2], yieldArray[3]]);
+      createBarArray(array, step, sortType, fixedIndexArray, beingSortedIndexArray, [
+        yieldArray[2],
+        yieldArray[3],
+      ]);
     } else {
-      createBarArray(array, fixedIndexArray, beingSortedIndexArray);
+      createBarArray(array, step, sortType, fixedIndexArray, beingSortedIndexArray);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1300));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
   }
 
   const $numberBars = document.querySelectorAll('.sorting-array-element');

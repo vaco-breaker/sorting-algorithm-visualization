@@ -1,18 +1,21 @@
-function* bubbleUp(arr) {
-  for (let i = 0; i < arr.length - 1; i++) {
-    for (let j = 0; j < arr.length - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        const temp = arr[j];
-        arr[j] = arr[j + 1];
-        arr[j + 1] = temp;
+function* bubbleSortingAlgorithm(array) {
+  yield [array, -1, -1];
 
-        yield [arr, i, j];
+  for (let i = 0; i < array.length - 1; i++) {
+    for (let j = 0; j < array.length - 1 - i; j++) {
+      if (array[j] > array[j + 1]) {
+        const temp = array[j];
+        array[j] = array[j + 1];
+        array[j + 1] = temp;
+
+        yield [array, i, j];
       } else {
-        yield [arr, i, j];
+        yield [array, i, j];
       }
     }
   }
-  return arr;
+
+  return array;
 }
 
-export default bubbleUp;
+export default bubbleSortingAlgorithm;

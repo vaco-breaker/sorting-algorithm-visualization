@@ -1,8 +1,10 @@
-export default function* mergeSortAlgorithm(array) {
+function* mergeSortingAlgorithm(array) {
   yield [...array];
   const result = yield* divideFunction(array);
   yield* mergeFunction(result);
 }
+
+export default mergeSortingAlgorithm;
 
 function* divideFunction(array) {
   if (array.length === 1) return array;
@@ -77,7 +79,7 @@ function* mergeFunction(array) {
   result = frontArray.concat(backArray);
   yield result;
   result = sortingFunction(result);
-  yield result;
+  yield result.slice(1);
 
   for (let i = 0; i < result.length; i++) {
     if (result[i] === null) nullCount++;
@@ -86,7 +88,7 @@ function* mergeFunction(array) {
   if (nullCount > 1) {
     yield* mergeFunction(result);
   }
-
+  console.log(result);
   return result;
 }
 

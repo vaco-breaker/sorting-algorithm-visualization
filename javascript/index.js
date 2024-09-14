@@ -1,12 +1,15 @@
 import selectionSortingAlgorithm from './sort/selection.js';
-import bubbleUp from './sort/bubble.js';
-import insertionSortAlgorithm from './sort/insertion.js';
-import mergeSortAlgorithm from './sort/merge.js';
+import bubbleSortingAlgorithm from './sort/bubble.js';
+import insertionSortingAlgorithm from './sort/insertion.js';
+import mergeSortingAlgorithm from './sort/merge.js';
 
 const $sortOptionBox = document.querySelector('.sort-option-box');
 const $sortOptions = $sortOptionBox.querySelectorAll('li');
 const $numberInput = document.querySelector('#numberInput');
 const $errorMessage = document.querySelector('#errorMessage');
+const $titleBox = document.querySelector('.title-box');
+const $title = $titleBox.querySelector('#title');
+const $iconCompleted = $titleBox.querySelector('img');
 const $submitButton = document.querySelector('#submitButton');
 const $showSortingNumbers = document.querySelector('#showSortingNumbers');
 
@@ -20,20 +23,25 @@ const SORT_OPTIONS = Object.freeze({
 let selectedSortOption = SORT_OPTIONS.BUBBLE;
 
 const changeNumberInput = (e) => {
-  const regExp = /[0-9 ]/g;
+  const regExp = /^[0-9 ]*$/;
+  const currentValue = e.target.value;
 
-  if (!regExp.test(e.target.value)) {
+  if (!regExp.test(currentValue)) {
     $errorMessage.textContent = '숫자와 띄어쓰기만 입력 가능합니다!';
+    e.target.value = currentValue.replace(/[^0-9 ]/g, '');
   } else {
     $errorMessage.textContent = '';
   }
 
-  e.target.value = e.target.value.replace(/ +(?= )|[^0-9 ]/g, '');
+  e.target.value = e.target.value.replace(/ +(?= )/g, '');
 };
 
 const clickSortOptions = (e) => {
+  initUi();
+
   $sortOptions.forEach((el) => {
     if (el.id === e.target.id) {
+      $title.textContent = el.textContent;
       el.classList.add('selected');
     } else if (e.target.tagName === 'LI') {
       el.classList.remove('selected');
@@ -46,13 +54,13 @@ const clickSortOptions = (e) => {
 const pickSortingAlgorithm = (option, targetArray) => {
   switch (option) {
     case SORT_OPTIONS.BUBBLE:
-      animation(bubbleUp(targetArray), SORT_OPTIONS.BUBBLE);
+      animation(bubbleSortingAlgorithm(targetArray), SORT_OPTIONS.BUBBLE);
       break;
     case SORT_OPTIONS.INSERTION:
-      animation(insertionSortAlgorithm(targetArray), SORT_OPTIONS.INSERTION);
+      animation(insertionSortingAlgorithm(targetArray), SORT_OPTIONS.INSERTION);
       break;
     case SORT_OPTIONS.MERGE:
-      animation(mergeSortAlgorithm(targetArray), SORT_OPTIONS.MERGE);
+      animation(mergeSortingAlgorithm(targetArray), SORT_OPTIONS.MERGE);
       break;
     case SORT_OPTIONS.SELECTION:
       animation(selectionSortingAlgorithm(targetArray), SORT_OPTIONS.SELECTION);
@@ -63,11 +71,17 @@ const pickSortingAlgorithm = (option, targetArray) => {
 };
 
 const pickSortingAlgorithmCallback = (e) => {
+  initUi();
+
   if (e.key === 'Enter' || e.type === 'click') {
     const numberArray = $numberInput.value
       .split(' ')
       .filter((value) => value !== '' && value !== ' ')
       .map(Number);
+
+    if (numberArray.length === 0) {
+      return;
+    }
 
     createBarArray(numberArray);
     pickSortingAlgorithm(selectedSortOption, numberArray);
@@ -86,15 +100,16 @@ const createBarArray = (array, fixedIndexArray, beingSortedIndexArray, tmpInfo) 
     const newElement = document.createElement('div');
     const textContent = tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number;
     newElement.textContent = textContent;
-    const percentHeight = (textContent / maxNumber) * 100;
+    const percentHeight = (textContent / maxNumber) * 80;
     newElement.style.height = `${percentHeight}%`;
     newElement.classList.add('sorting-array-element');
 
     if (fixedIndexArray && fixedIndexArray.includes(index)) {
       newElement.classList.add('sorted-fixed');
     }
+
     if (beingSortedIndexArray && beingSortedIndexArray.includes(index)) {
-      newElement.classList.add('being-sorted');
+      newElement.classList.add('being-sorted-highest');
     }
 
     newElement.id = number;
@@ -109,7 +124,7 @@ const animation = async (generator, sortType) => {
 
   for (let yieldArray of generator) {
     if (isFirst) {
-      $showSortingNumbers.classList.add('fade-in');
+      $showSortingNumbers.classList.add('intro-animation');
       isFirst = false;
     }
 
@@ -127,7 +142,8 @@ const animation = async (generator, sortType) => {
   }
 
   const $numberBars = document.querySelectorAll('.sorting-array-element');
-  $numberBars.forEach((tag) => tag.classList.add('sorted-completed'));
+  $numberBars.forEach((tag) => tag.classList.add('sorted-completed-bar'));
+  $iconCompleted.classList.add('completed');
 
   activateEvent();
 };
@@ -135,7 +151,7 @@ const animation = async (generator, sortType) => {
 const checkWhichFixed = (yieldArray, sortType) => {
   switch (sortType) {
     case SORT_OPTIONS.BUBBLE:
-      if (yieldArray[1] === 0) {
+      if (yieldArray[1] === 0 || yieldArray[1] === -1) {
         return null;
       } else {
         const previouslyFixedIndex = yieldArray[0].length - yieldArray[1];
@@ -173,6 +189,7 @@ const checkWhichFixed = (yieldArray, sortType) => {
 const checkWhichBeingSorted = (yieldArray, sortType) => {
   switch (sortType) {
     case SORT_OPTIONS.BUBBLE:
+      if (yieldArray[2] === -1) return null;
       return [yieldArray[2], yieldArray[2] + 1];
     case SORT_OPTIONS.INSERTION:
       if (yieldArray[2] === -1) {
@@ -189,6 +206,11 @@ const checkWhichBeingSorted = (yieldArray, sortType) => {
   }
 };
 
+const initUi = () => {
+  $showSortingNumbers.innerHTML = '';
+  $iconCompleted.classList.remove('completed');
+};
+
 const activateEvent = () => {
   $numberInput.addEventListener('input', changeNumberInput);
   $sortOptionBox.addEventListener('click', clickSortOptions);
@@ -197,7 +219,7 @@ const activateEvent = () => {
   $submitButton.classList.remove('disabled');
   $sortOptionBox.classList.remove('disabled');
   $numberInput.removeAttribute('disabled');
-  $showSortingNumbers.classList.remove('fade-in');
+  $showSortingNumbers.classList.remove('intro-animation');
 };
 
 const deactivateEvent = () => {

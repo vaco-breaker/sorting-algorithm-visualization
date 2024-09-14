@@ -1,4 +1,6 @@
-export default function* selectionSortingAlgorithm(array) {
+function* selectionSortingAlgorithm(array) {
+  yield [array, -1, -1];
+
   for (let i = 0; i < array.length; i++) {
     let lowestIndex = i;
     let j;
@@ -23,3 +25,5 @@ export default function* selectionSortingAlgorithm(array) {
     }
   }
 }
+
+export default selectionSortingAlgorithm;

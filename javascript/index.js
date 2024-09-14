@@ -83,7 +83,6 @@ const pickSortingAlgorithmCallback = (e) => {
       return;
     }
 
-    // createBarArray(numberArray, 1);
     pickSortingAlgorithm(selectedSortOption, numberArray);
   }
 };

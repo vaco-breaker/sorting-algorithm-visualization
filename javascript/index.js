@@ -22,18 +22,6 @@ const SORT_OPTIONS = Object.freeze({
 
 let selectedSortOption = SORT_OPTIONS.BUBBLE;
 
-class PreviousArray {
-  constructor() {
-    this.value = null;
-  }
-
-  setPreviousArray(array) {
-    this.value = array.slice();
-  }
-}
-
-const previousArray = new PreviousArray();
-
 const changeNumberInput = (e) => {
   const regExp = /^[0-9 ]*$/;
   const currentValue = e.target.value;
@@ -100,15 +88,30 @@ const pickSortingAlgorithmCallback = (e) => {
   }
 };
 
+const checkPreviousArray = () => {
+  let previousArray = null;
+
+  return {
+    getPreviousArray() {
+      return previousArray;
+    },
+    setPreviousArray(array) {
+      previousArray = array.slice();
+    },
+  };
+};
+
+const { getPreviousArray, setPreviousArray } = checkPreviousArray();
+
 /**
  * DOM 에 접근하여 배열에 맞는 막대를 그려주는 함수입니다.
  * @param {Array<Number>} array
  */
-const createBarArray = (array, step, fixedIndexArray, beingSortedIndexArray, tmpInfo) => {
+const createBarArray = (array, step, sortType, fixedIndexArray, beingSortedIndexArray, tmpInfo) => {
   $showSortingNumbers.innerHTML = '';
   const maxNumber = Math.max(...array);
 
-  if ((!tmpInfo && step === 1) || tmpInfo) {
+  if (step === 1 || sortType === SORT_OPTIONS.INSERTION || sortType === SORT_OPTIONS.MERGE) {
     array.forEach((number, index) => {
       const newElement = document.createElement('div');
       const textContent = tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number;
@@ -129,10 +132,12 @@ const createBarArray = (array, step, fixedIndexArray, beingSortedIndexArray, tmp
       newElement.dataset.index = index;
       $showSortingNumbers.appendChild(newElement);
 
-      previousArray.setPreviousArray(array);
+      setPreviousArray(array);
     });
   } else {
-    previousArray.value.forEach((number, index) => {
+    const previousArray = getPreviousArray();
+
+    previousArray.forEach((number, index) => {
       const newElement = document.createElement('div');
       const textContent = tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number;
       newElement.textContent = textContent;
@@ -167,7 +172,7 @@ const createBarArray = (array, step, fixedIndexArray, beingSortedIndexArray, tmp
         element.classList.add('being-sorted-highest');
       }
 
-      previousArray.setPreviousArray(array);
+      setPreviousArray(array);
     });
   }
 };
@@ -196,12 +201,12 @@ const animation = async (generator, sortType) => {
     const beingSortedIndexArray = checkWhichBeingSorted(yieldArray, sortType);
 
     if (sortType === SORT_OPTIONS.INSERTION) {
-      createBarArray(array, step, fixedIndexArray, beingSortedIndexArray, [
+      createBarArray(array, step, sortType, fixedIndexArray, beingSortedIndexArray, [
         yieldArray[2],
         yieldArray[3],
       ]);
     } else {
-      createBarArray(array, step, fixedIndexArray, beingSortedIndexArray);
+      createBarArray(array, step, sortType, fixedIndexArray, beingSortedIndexArray);
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1000));

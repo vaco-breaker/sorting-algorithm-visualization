@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/styles/reset.css" />
     <link rel="stylesheet" href="assets/styles/style.css" />
-    <link rel="icon" href="/assets/images/heart.jpg" />
-    <!-- Google Fonts - Noto Sans KR -->
+    <link rel="icon" href="/assets/images/logo.svg" />
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -18,20 +18,36 @@
   </head>
   <body>
     <nav>
-      <header>Sorting Algorithm Visualization</header>
-      <div class="input-box">
-        <input id="numberInput" type="text" placeholder="ex) 5 8 12 15" />
-        <span id="errorMessage"></span>
-      </div>
+      <header>
+        <img src="./assets/images/arrow_down.svg" alt="arrow_down" />Sorting_Algorithm
+      </header>
       <ul class="sort-option-box">
-        <li id="bubbleSort" class="selected">Bubble Sort</li>
-        <li id="insertionSort">Insertion Sort</li>
-        <li id="mergeSort">Merge Sort</li>
-        <li id="selectionSort">Selection Sort</li>
+        <li id="bubbleSort" class="selected">
+          <img src="./assets/images/js.svg" alt="JS" />Bubble.js
+        </li>
+        <li id="insertionSort"><img src="./assets/images/js.svg" alt="JS" />Insertion.js</li>
+        <li id="mergeSort"><img src="./assets/images/js.svg" alt="JS" />Merge.js</li>
+        <li id="selectionSort"><img src="./assets/images/js.svg" alt="JS" />Selection.js</li>
       </ul>
-      <button id="submitButton">SUBMIT</button>
+      <a href="https://github.com/vaco-breaker/sorting-algorithm-visualization" target="_blank">
+        <img src="./assets/images/github.svg" alt="github" />
+        <span>Made by</span>
+      </a>
     </nav>
     <main>
+      <div class="gnb">
+        <h3 class="title-box">
+          <span id="title">Bubble.js</span>
+          <img src="./assets/images/check.svg" alt="completed" />
+        </h3>
+        <div class="user_input">
+          <div class="input-box">
+            <input id="numberInput" type="text" placeholder="ex) 5 13 8 20 .." />
+            <span id="errorMessage"></span>
+          </div>
+          <button id="submitButton">SORTING</button>
+        </div>
+      </div>
       <article id="showSortingNumbers"></article>
     </main>
   </body>

@@ -100,7 +100,7 @@ const createBarArray = (array, fixedIndexArray, beingSortedIndexArray, tmpInfo) 
     const newElement = document.createElement('div');
     const textContent = tmpInfo ? (tmpInfo[0] === index ? tmpInfo[1] : number) : number;
     newElement.textContent = textContent;
-    const percentHeight = (textContent / maxNumber) * 80;
+    const percentHeight = (textContent / maxNumber) * 100;
     newElement.style.height = `${percentHeight}%`;
     newElement.classList.add('sorting-array-element');
 

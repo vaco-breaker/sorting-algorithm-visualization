@@ -209,7 +209,8 @@ article#showSortingNumbers {
   margin: 8px;
   background-color: whitesmoke;
   color: black;
-  font-size: 22px;
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .intro-animation {

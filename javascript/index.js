@@ -143,7 +143,7 @@ const createBarArray = (array, step, sortType, fixedIndexArray, beingSortedIndex
       newElement.textContent = textContent;
       const percentHeight = (textContent / maxNumber) * 100;
       newElement.style.height = `${percentHeight}%`;
-      newElement.style.transition = 'all 1s';
+      newElement.style.transition = 'all 1.5s';
       newElement.classList.add('sorting-array-element');
 
       newElement.id = number;
@@ -209,7 +209,7 @@ const animation = async (generator, sortType) => {
       createBarArray(array, step, sortType, fixedIndexArray, beingSortedIndexArray);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
   }
 
   const $numberBars = document.querySelectorAll('.sorting-array-element');

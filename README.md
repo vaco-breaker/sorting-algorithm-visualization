@@ -5,7 +5,7 @@
 > 개발 기간: 2024. 09. 09 ~ 2024. 09. 15 <br/>
 > 팀: vaco-breaker
 
-### 팀원 소개
+### 1️⃣ 팀원 소개
 
 <table>
   <tbody>
@@ -24,7 +24,7 @@
 
 <br/>
 
-### 프로젝트 소개
+### 2️⃣ 프로젝트 소개
 
 4가지 정렬 알고리즘에 대해서 공부하고 애니메이션으로 구현하기
 
@@ -35,7 +35,7 @@
 
 <br/>
 
-### 새롭게 배운 것과 적용해 본 것
+### 3️⃣ 새롭게 배운 것과 적용해 본 것
 
 #### 1. requireAnimationFrame(rAF)
 
@@ -63,7 +63,7 @@ rAF를 동작시켰을 때 1프레임이 16ms로 지켜지는 모습
 
 <br/>
 
-### 🛠 Tech Stack
+### 4️⃣ 🛠 Tech Stack
 
 <div align="left">
   <img src="https://img.shields.io/badge/html-E34F26?style=for-the-badge&logo=html5&logoColor=white">
